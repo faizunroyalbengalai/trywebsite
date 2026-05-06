@@ -39,7 +39,7 @@ variable "db_username" {
 variable "db_password" {
   type      = string
   sensitive = true
-  default   = ""
+  default   = "AppPass1!"
 }
 
 data "aws_vpc" "default" {
@@ -180,7 +180,7 @@ resource "aws_db_instance" "main" {
   storage_type           = "gp2"
   db_name                = var.db_name != "" ? var.db_name : "${replace(var.project_name, "-", "_")}db"
   username               = var.db_username != "" ? var.db_username : "appuser"
-  password               = var.db_password
+  password               = var.db_password != "" ? var.db_password : "AppPass1!"
   db_subnet_group_name   = aws_db_subnet_group.main.name
   vpc_security_group_ids = [aws_security_group.rds_sg.id]
   skip_final_snapshot    = true
@@ -198,8 +198,5 @@ output "instance_id" {
   value = aws_instance.server.id
 }
 output "rds_endpoint" {
-  value = aws_db_instance.main.address
-}
-output "rds_port" {
-  value = aws_db_instance.main.port
+  value = aws_db_instance.main.endpoint
 }
